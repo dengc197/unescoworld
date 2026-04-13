@@ -1,1 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Potala Palace</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      background: #eceae4;
+      color: #6f0907;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page {
+      min-height: 100vh;
+      position: relative;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.75), transparent 28%),
+        linear-gradient(to bottom, #eef2f4 0%, #e9e5db 55%, #e5e1d8 100%);
+    }
+    .logo {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transform: scale(.9);
+    }
+    .ladder {
+      width: 90px;
+      height: 150px;
+      position: relative;
+      transform: rotate(-12deg);
+    }
+    .ladder .rail1,
+    .ladder .rail2,
+    .ladder .step {
+      position: absolute;
+      background: #ccb07a;
+      border-radius: 4px;
+    }
+    .ladder .rail1 { width: 9px; height: 128px; left: 24px; bottom: 0; transform: skewX(-14deg); }
+    .ladder .rail2 { width: 9px; height: 138px; right: 20px; bottom: 6px; transform: skewX(14deg); }
+    .ladder .step.s1 { width: 40px; height: 8px; left: 24px; bottom: 14px; }
+    .ladder .step.s2 { width: 34px; height: 8px; left: 27px; bottom: 36px; }
+    .ladder .step.s3 { width: 30px; height: 8px; left: 30px; bottom: 58px; }
+    .ladder .step.s4 { width: 24px; height: 8px; left: 34px; bottom: 80px; }
+    .ladder .step.s5 { width: 18px; height: 8px; left: 38px; bottom: 102px; }
+    .ladder .step.s6 { width: 12px; height: 8px; left: 42px; bottom: 124px; }
+    .logo-text {
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: #6f0907;
+      text-shadow: 0 16px 0 rgba(120,120,120,.14);
+      white-space: nowrap;
+    }
+    .topbar {
+      position: fixed;
+      top: 30px;
+      right: 34px;
+      z-index: 20;
+      display: flex;
+      gap: 28px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .topbar a { opacity: .86; }
+    .topbar a:hover { opacity: 1; }
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: end;
+      padding: 120px 56px 40px 56px;
+      gap: 24px;
+      position: relative;
+    }
+    .hero-left {
+      align-self: center;
+      padding-top: 40px;
+    }
+    .giant {
+      font-size: clamp(82px, 15vw, 230px);
+      line-height: .82;
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      color: #7a0805;
+      text-transform: uppercase;
+    }
+    .giant .row {
+      display: block;
+      transform-origin: left center;
+      text-shadow: 6px 6px 0 rgba(60,0,0,.16);
+    }
+    .giant .r1 { transform: translateX(0) translateY(0); }
+    .giant .r2 { transform: translateX(70px) translateY(-10px); }
+    .sub-script {
+      margin-top: 16px;
+      font-size: clamp(22px, 3vw, 48px);
+      letter-spacing: 2px;
+      color: #7a0805;
+    }
+    .intro {
+      margin-top: 26px;
+      max-width: 540px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #6e5f4d;
+    }
+    .hero-actions {
+      margin-top: 28px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 18px;
+      border: 1px solid #7a0805;
+      color: #7a0805;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: transparent;
+      transition: .2s;
+    }
+    .btn:hover {
+      background: #7a0805;
+      color: #eceae4;
+    }
+    .btn.fill {
+      background: #7a0805;
+      color: #eceae4;
+    }
+    .btn.fill:hover {
+      background: #5a0504;
+      border-color: #5a0504;
+    }
+    .hero-right {
+      position: relative;
+      min-height: 740px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .sky {
+      position: absolute;
+      inset: 60px 0 0 0;
+      background: linear-gradient(to bottom, #dfe8ee 0%, #d4e2ee 40%, #ecede6 100%);
+      border-top-left-radius: 160px;
+      overflow: hidden;
+    }
+    .mist {
+      position: absolute;
+      width: 280px;
+      height: 180px;
+      left: 10%;
+      top: 190px;
+      background: radial-gradient(circle at 40% 50%, rgba(111,158,217,.5), rgba(111,158,217,.05) 70%);
+      filter: blur(10px);
+    }
+    .palace {
+      position: absolute;
+      width: min(430px, 90%);
+      height: 540px;
+      right: 10px;
+      bottom: 0;
+    }
+    .mountain {
+      position: absolute;
+      width: 280px;
+      height: 190px;
+      left: 18px;
+      bottom: 220px;
+      background: linear-gradient(135deg, #9fb7d8, #7e9cc9 70%, rgba(126,156,201,0) 71%);
+      clip-path: polygon(0 100%, 18% 58%, 38% 32%, 56% 18%, 68% 11%, 84% 23%, 100% 45%, 100% 100%);
+      opacity: .8;
+    }
+    .steps {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 420px;
+    }
+    .stepwall {
+      position: absolute;
+      bottom: 0;
+      background: #f6f4ef;
+      box-shadow: inset 0 0 0 1px rgba(122,8,5,.06);
+      overflow: hidden;
+    }
+    .stepwall:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 22px;
+      background: #7a0805;
+    }
+    .stepwall:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 22px;
+      height: 6px;
+      background: rgba(122,8,5,.22);
+    }
+    .w1 { width: 88%; height: 92px; right: 0; clip-path: polygon(16% 0,100% 0,100% 100%,0 100%,0 30%); }
+    .w2 { width: 77%; height: 86px; right: 0; bottom: 78px; clip-path: polygon(18% 0,100% 0,100% 100%,0 100%,0 35%); }
+    .w3 { width: 66%; height: 82px; right: 0; bottom: 150px; clip-path: polygon(20% 0,100% 0,100% 100%,0 100%,0 38%); }
+    .w4 { width: 55%; height: 78px; right: 0; bottom: 218px; clip-path: polygon(23% 0,100% 0,100% 100%,0 100%,0 40%); }
+    .w5 { width: 44%; height: 72px; right: 0; bottom: 282px; clip-path: polygon(25% 0,100% 0,100% 100%,0 100%,0 42%); }
+    .w6 { width: 34%; height: 68px; right: 0; bottom: 338px; clip-path: polygon(28% 0,100% 0,100% 100%,0 100%,0 45%); }
+    .core-red {
+      position: absolute;
+      width: 158px;
+      height: 120px;
+      right: 92px;
+      bottom: 394px;
+      background: #7a0805;
+      box-shadow: inset 0 12px 0 rgba(255,255,255,.08);
+    }
+    .core-red:before, .core-red:after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 12px;
+      top: -12px;
+      background: #caa866;
+      border-radius: 2px 2px 0 0;
+    }
+    .core-red:before { left: 40px; }
+    .core-red:after { right: 40px; }
+    .mini-wings {
+      position: absolute;
+      right: 60px;
+      bottom: 410px;
+      width: 250px;
+      height: 160px;
+    }
+    .mini-wings span {
+      position: absolute;
+      background: #f6f4ef;
+      box-shadow: inset 0 0 0 1px rgba(122,8,5,.08);
+    }
+    .mini-wings .a { width: 92px; height: 54px; left: 0; bottom: 0; }
+    .mini-wings .b { width: 82px; height: 50px; right: 0; bottom: 18px; }
+    .mini-wings .c { width: 72px; height: 44px; left: 38px; bottom: 56px; }
+    .mini-wings .d { width: 64px; height: 40px; right: 38px; bottom: 74px; }
+    .sections {
+      padding: 80px 56px 120px;
+      position: relative;
+      z-index: 2;
+    }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .panel {
+      background: rgba(245,243,238,.8);
+      border: 1px solid rgba(122,8,5,.16);
+      padding: 28px;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel.dark {
+      background: #7a0805;
+      color: #f1ede4;
+    }
+    .panel .small {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: .72;
+      margin-bottom: 14px;
+    }
+    .panel h2 {
+      font-size: clamp(30px, 4vw, 58px);
+      line-height: .95;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+    .panel p {
+      max-width: 560px;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    .stair-mark {
+      position: absolute;
+      right: -10px;
+      bottom: -10px;
+      width: 190px;
+      height: 150px;
+      opacity: .14;
+    }
+    .stair-mark div {
+      position: absolute;
+      background: currentColor;
+    }
+    .stair-mark .s1 { width: 130px; height: 22px; left: 0; bottom: 0; }
+    .stair-mark .s2 { width: 106px; height: 22px; left: 24px; bottom: 26px; }
+    .stair-mark .s3 { width: 84px; height: 22px; left: 46px; bottom: 52px; }
+    .stair-mark .s4 { width: 62px; height: 22px; left: 68px; bottom: 78px; }
+    .stair-mark .s5 { width: 40px; height: 22px; left: 90px; bottom: 104px; }
+    .quote {
+      font-size: clamp(30px, 5vw, 68px);
+      line-height: .95;
+      max-width: 800px;
+      color: #7a0805;
+      text-transform: uppercase;
+      margin: 80px 0 26px;
+    }
+    .strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 26px;
+    }
+    .tile {
+      min-height: 220px;
+      padding: 22px;
+      border: 1px solid rgba(122,8,5,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.56), rgba(240,236,228,.9));
+      position: relative;
+      overflow: hidden;
+    }
+    .tile h3 {
+      font-size: 24px;
+      line-height: 1;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .tile p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #665949;
+      max-width: 280px;
+    }
+    .num {
+      position: absolute;
+      right: 16px;
+      bottom: 8px;
+      font-size: 80px;
+      color: rgba(122,8,5,.08);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .footer {
+      padding: 28px 56px 40px;
+      border-top: 1px solid rgba(122,8,5,.14);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #7a0805;
+    }
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; padding-top: 110px; }
+      .hero-right { min-height: 620px; }
+      .grid2, .strip { grid-template-columns: 1fr; }
+      .topbar { gap: 16px; font-size: 10px; right: 20px; }
+      .logo { left: 16px; top: 18px; transform: scale(.72); transform-origin: top left; }
+      .hero, .sections, .footer { padding-left: 20px; padding-right: 20px; }
+      .giant .r2 { transform: translateX(24px) translateY(-6px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="logo">
+      <div class="ladder">
+        <div class="rail1"></div>
+        <div class="rail2"></div>
+        <div class="step s1"></div>
+        <div class="step s2"></div>
+        <div class="step s3"></div>
+        <div class="step s4"></div>
+        <div class="step s5"></div>
+        <div class="step s6"></div>
+      </div>
+      <div class="logo-text">POTALA</div>
+    </div>
 
+    <div class="topbar">
+      <a href="#about">About</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#heritage">Heritage</a>
+      <a href="#visit">Archive</a>
+    </div>
+
+    <section class="hero">
+      <div class="hero-left">
+        <div class="giant">
+          <span class="row r1">POTALA</span>
+          <span class="row r2">PALACE</span>
+        </div>
+        <div class="sub-script">པོ་ཏ་ལ་ཕོ་བྲང</div>
+        <p class="intro">
+          A homepage built from ascent, sacred hierarchy, and stepped form. The visual system follows your existing language: deep red type, pale ground, vertical motion, and architectural rhythm inspired by the Historic Ensemble of the Potala Palace in Lhasa.
+        </p>
+        <div class="hero-actions">
+          <a class="btn fill" href="#about">Enter Project</a>
+          <a class="btn" href="#heritage">World Heritage</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="sky"></div>
+        <div class="mist"></div>
+        <div class="palace">
+          <div class="mountain"></div>
+          <div class="steps">
+            <div class="stepwall w1"></div>
+            <div class="stepwall w2"></div>
+            <div class="stepwall w3"></div>
+            <div class="stepwall w4"></div>
+            <div class="stepwall w5"></div>
+            <div class="stepwall w6"></div>
+          </div>
+          <div class="mini-wings">
+            <span class="a"></span>
+            <span class="b"></span>
+            <span class="c"></span>
+            <span class="d"></span>
+          </div>
+          <div class="core-red"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sections" id="about">
+      <div class="grid2">
+        <div class="panel dark">
+          <div class="small">Concept</div>
+          <h2>Ascending as Architecture</h2>
+          <p>
+            The homepage is organized like the palace itself. Wide base, stepped movement, elevated core. The structure turns verticality into navigation so the page already feels like a climb.
+          </p>
+          <div class="stair-mark">
+            <div class="s1"></div><div class="s2"></div><div class="s3"></div><div class="s4"></div><div class="s5"></div>
+          </div>
+        </div>
+        <div class="panel" id="architecture">
+          <div class="small">Identity</div>
+          <h2>Form, Ritual, Height</h2>
+          <p>
+            The type is oversized and directional, echoing the expressive Tibetan-inspired forms in your poster work. The small ladder mark stays as a signature element, while stair blocks translate the visual language of walls, terraces, and ascent into web layout.
+          </p>
+          <div class="stair-mark">
+            <div class="s1"></div><div class="s2"></div><div class="s3"></div><div class="s4"></div><div class="s5"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote">
+        From city to mountain, from wall to summit, the page rises the same way the palace rises.
+      </div>
+
+      <div class="strip" id="heritage">
+        <div class="tile">
+          <h3>Historic Ensemble</h3>
+          <p>The homepage can link outward to Potala Palace, Jokhang Temple, and Norbulingka as one connected UNESCO system instead of treating the site as a single image.</p>
+          <div class="num">01</div>
+        </div>
+        <div class="tile">
+          <h3>Outstanding Value</h3>
+          <p>Use this area for short text about cultural heritage, sacred authority, and architectural symbolism. It works well as a quick entry into the longer publication.</p>
+          <div class="num">02</div>
+        </div>
+        <div class="tile">
+          <h3>Archive / Booklet</h3>
+          <p>A third section can lead into the booklet, poster system, and applications. This makes the homepage feel like the front door to the whole identity project.</p>
+          <div class="num">03</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer" id="visit">
+      <div>UNESCO World Heritage Project</div>
+      <div>Potala Palace, Lhasa</div>
+      <div>Visual System by Charlie</div>
+    </div>
+  </div>
+</body>
+</html>
